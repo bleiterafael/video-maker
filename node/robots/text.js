@@ -1,6 +1,7 @@
 const algorithmia = require('algorithmia')
 const algorithmiaApiKey = require('../credentials/algorithmia.json').apiKey
 const sentenceBoundaryDetection = require('sbd')
+const axios = require(`axios`)
 
 async function robot(content){
     await fetchContentFromWikipedia(content)
@@ -8,24 +9,17 @@ async function robot(content){
     breakContentIntoSentences(content)
 
     async function fetchContentFromWikipedia(content){
-        // const algorithmiaAuthenticated = algorithmia(algorithmiaApiKey)
-        // const wikipediaAlgorithm = algorithmiaAuthenticated.algo('web/WikipediaParser/0.1.2')
-        // const wikipediaResponse = await wikipediaAlgorithm.pipe(content.searchTerm)
-        // console.log(wikipediaResponse)
-        //const wikipediaContent = wikipediaResponse.get()
-        //console.log(wikipediaContent)
-
-        const wikipediaContent = {
-            summary: 'This is the summary.',
-            reference: ['reference one','reference two'],
-            pageid: 4295834,
-            links: ['link one', 'link two', 'link three'],
-            images: ['image one', 'image two'],
-            content: 'This is the content. C.R.F. significa Clube de Regatas do Flamengo. \n The next line is empty: \n \n The previous line was empty! The next line is a markdown \n = this is a markdown \n this is the end of content'
+        const urlGetPaginas = `https://en.wikipedia.org/api/rest_v1/page/summary/${content.searchTerm}`
+        let responsePaginas = await requestWikipediaData(urlGetPaginas)
+        const urlGetContent = `https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=${responsePaginas.data.title}&rvslots=*&rvprop=content&formatversion=2&format=json`
+        let responseContent = await requestWikipediaData(urlGetContent)
+        content.sourceContentOriginal = responseContent.data.query.pages[0].revisions[0].slots.main.content
+        
+        async function requestWikipediaData(url)
+        {
+            let data = await axios.get(url);
+            return data;
         }
-        //console.log(wikipediaContent)
-
-        content.sourceContentOriginal = wikipediaContent.content
     }
 
     function sanitizeContent(content){
@@ -35,7 +29,17 @@ async function robot(content){
 
         function removeBlankAndMarkdownLines(text){
             const allLines = text.split('\n')
-            const withoutBlankAndMarkdownLines = allLines.filter(l => l.trim().length > 0 && !l.trim().startsWith('='))    
+            const withoutBlankAndMarkdownLines = allLines.filter(l => 
+                    l.trim().length > 0 && 
+                    !l.trim().startsWith('=') && 
+                    !l.trim().startsWith('{') &&
+                    !l.trim().startsWith('}') &&
+                    !l.trim().startsWith('!>\'') &&
+                    !l.trim().endsWith('\'<!') &&
+                    !l.trim().startsWith('!') &&
+                    !l.trim().startsWith('|')
+                )    
+            console.log(withoutBlankAndMarkdownLines)
             return withoutBlankAndMarkdownLines.join(' ')
         }
         function removeDatesInParenteses(text){

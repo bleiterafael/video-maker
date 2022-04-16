@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "algorithmia": "^0.3.10",
+    "axios": "^0.26.1",
     "readline-sync": "^1.4.10",
     "sbd": "^1.0.19"
   }
