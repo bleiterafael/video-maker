@@ -48,7 +48,6 @@ async function robot(content){
     }
 
     async function getContent(){
-        console.log(title)
         let config = {
             'action': 'query',
             'prop': 'extracts|images|links|info|extlinks',
