@@ -39,7 +39,6 @@ async function robot(content){
                     !l.trim().startsWith('!') &&
                     !l.trim().startsWith('|')
                 )    
-            console.log(withoutBlankAndMarkdownLines)
             return withoutBlankAndMarkdownLines.join(' ')
         }
         function removeDatesInParenteses(text){
