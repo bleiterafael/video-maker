@@ -6,7 +6,9 @@ const robots = {
 }
 
 async function start(){
-    const content = {}
+    const content = {
+        maximumSentences: 7
+    }
 
     await robots.userInput(content)
     await robots.wikipedia(content)
