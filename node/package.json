@@ -12,6 +12,7 @@
     "readline-sync": "^1.4.10",
     "rss-parser": "^3.12.0",
     "sbd": "^1.0.19",
-    "superagent": "^7.1.2"
+    "superagent": "^7.1.2",
+    "watson-developer-cloud": "^4.0.1"
   }
 }
