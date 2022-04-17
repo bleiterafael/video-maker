@@ -1,7 +1,7 @@
 const superAgent = require('superagent')
 const selectItemInList = require('../components/select-item-in-list.js')
 
-async function robot(content){
+async function Wikipedia(content){
     const images = []
     let ctn = ''
     let title = ''
@@ -14,13 +14,16 @@ async function robot(content){
 
     console.log('Fetching from Wikipedia...')
     title = await getTitle(content.searchTerm)
+
     console.log('Searching content...')
     await getContent()
+
     console.log('Building structure to others robots...')
     structure = buildStructure()
     content.sourceContentOriginal = structure.content
 
     async function getTitle(text){
+        console.log(content.language)
         let config = {
             'action': 'query',
             'list': 'search',
@@ -28,9 +31,7 @@ async function robot(content){
             'srsearch': text,
             'format': 'json'
         }
-        const res = await superAgent
-                            .get('https://en.wikipedia.org/w/api.php')
-                            .query(config)
+        const res = await request(config)     
 
         if(!res || !res._body || !res._body.query || !res._body.query.search ||  !res._body.query.search.length){
             console.log('Your search term don\'t return any result')
@@ -57,16 +58,15 @@ async function robot(content){
             'titles': title,
             'format': 'json'
         }
-        const ret = await superAgent
-                            .get('https://en.wikipedia.org/w/api.php')
-                            .query(config)
+        const res = await request(config)     
+
         let value 
-        map = new Map(Object.entries(ret._body.query.pages))
+        map = new Map(Object.entries(res._body.query.pages))
         map.forEach(e => value = e)
         if(value.links)
-        value.links.forEach(e => links.push(e.title))
+            value.links.forEach(e => links.push(e.title))
         if(value.extlinks)
-        value.extlinks.forEach(e => references.push(e['*']))
+            value.extlinks.forEach(e => references.push(e['*']))
         pageid = value.pageid
         ctn = value.extract
         summary = value.extract.split('\n\n\n')[0]
@@ -82,13 +82,19 @@ async function robot(content){
             'format': 'json',
             'iiprop': 'url'
         }
-        const ret = await superAgent
-                            .get('https://en.wikipedia.org/w/api.php')
-                            .query(config)
+        const res = await request(config)        
 
-        map = new Map(Object.entries(ret._body.query.pages))
+        map = new Map(Object.entries(res._body.query.pages))
         map.forEach(e => e.imageinfo.forEach(ii => images.push(ii.url)))
 
+    }
+
+    async function request(config){
+        let url = `https://${content.language}.wikipedia.org/w/api.php`
+        const res = await superAgent
+                            .get(url)
+                            .query(config)
+        return res
     }
 
     function buildStructure(){
@@ -105,4 +111,4 @@ async function robot(content){
     }
 }
 
-module.exports = robot
+module.exports = Wikipedia

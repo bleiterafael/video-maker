@@ -1,6 +1,6 @@
 const sentenceBoundaryDetection = require('sbd')
 
-async function robot(content){
+async function Text(content){
     sanitizeContent(content)
     breakContentIntoSentences(content)
 
@@ -40,4 +40,4 @@ async function robot(content){
     }
 }
 
-module.exports = robot
+module.exports = Text
