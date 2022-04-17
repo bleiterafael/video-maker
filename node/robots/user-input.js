@@ -3,11 +3,12 @@ const Parser = require('rss-parser')
 const question = require('../components/question.js')
 const selectItemInList = require('../components/select-item-in-list.js')
 
-async function robot(content){
+async function UserInput(content){
     const TREND_URL = 'https://trends.google.com/trends/trendingsearches/daily/rss?geo=BR'
     
-    content.searchTerm = await askAndReturnSearchTerm(content)
-    content.prefix = askAndReturnPrefix(content)
+    content.searchTerm = await askAndReturnSearchTerm()
+    content.prefix = askAndReturnPrefix()
+    content.language = askAndReturnLanguage()
 
     async function askAndReturnSearchTerm(){
         const response = question('Type a Wikipedia search term or G to fetch Google Trends:')
@@ -33,6 +34,11 @@ async function robot(content){
         return selectedPrefixText
     }
     
+    function askAndReturnLanguage(){
+        const languages = ['pt','en']
+        const selectedLanguage = selectItemInList(languages,'Choose language: ')
+        return selectedLanguage;
+    }
 }
 
-module.exports = robot
+module.exports = UserInput
