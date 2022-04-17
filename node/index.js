@@ -7,10 +7,10 @@ const robots = {
 async function start(){
     const content = {}
 
-    robots.userInput(content)
+    await robots.userInput(content)
     await robots.text(content)
 
-    console.log(content)
+    //console.log(content)
 }
 
 start()
