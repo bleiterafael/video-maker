@@ -2,18 +2,18 @@
 const robots = {
     userInput: require('./robots/user-input.js'),
     text: require('./robots/text.js'),
-    wikipedia: require('./robots/wikipedia.js')
+    wikipedia: require('./robots/wikipedia.js'),
+    state: require('./robots/state.js')
 }
 
 async function start(){
-    const content = {
-        maximumSentences: 7
-    }
+    
 
-    await robots.userInput(content)
-    await robots.wikipedia(content)
-    await robots.text(content)
+    await robots.userInput()
+    await robots.wikipedia()
+    await robots.text()
 
+    const content = robots.state.load()
     console.log(content)
 }
 

@@ -1,7 +1,8 @@
 const superAgent = require('superagent')
 const selectItemInList = require('../components/select-item-in-list.js')
+const state = require('./state.js')
 
-async function Wikipedia(content){
+async function Wikipedia(){
     const images = []
     let ctn = ''
     let title = ''
@@ -12,6 +13,8 @@ async function Wikipedia(content){
     const references = []
     let structure
 
+    const content = state.load()
+
     console.log('Fetching from Wikipedia...')
     title = await getTitle(content.searchTerm)
 
@@ -21,6 +24,8 @@ async function Wikipedia(content){
     console.log('Building structure to others robots...')
     structure = buildStructure()
     content.sourceContentOriginal = structure.content
+
+    state.save(content)
 
     async function getTitle(text){
         console.log(content.language)
