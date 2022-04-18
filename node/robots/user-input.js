@@ -2,13 +2,19 @@
 const Parser = require('rss-parser')
 const question = require('../components/question.js')
 const selectItemInList = require('../components/select-item-in-list.js')
+const state = require('./state.js')
 
-async function UserInput(content){
+async function UserInput(){
     const TREND_URL = 'https://trends.google.com/trends/trendingsearches/daily/rss?geo=BR'
+    const content = {
+        maximumSentences: 7
+    }
     
     content.searchTerm = await askAndReturnSearchTerm()
     content.prefix = askAndReturnPrefix()
     content.language = askAndReturnLanguage()
+
+    state.save(content)
 
     async function askAndReturnSearchTerm(){
         const response = question('Type a Wikipedia search term or G to fetch Google Trends:')

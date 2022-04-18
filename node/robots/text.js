@@ -1,8 +1,10 @@
 const sentenceBoundaryDetection = require('sbd')
 const watson = require('../credentials/watson-nlu.json')
+const state = require('./state.js')
 
-var NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js')
-var nlu = new NaturalLanguageUnderstandingV1({
+
+const NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js')
+const nlu = new NaturalLanguageUnderstandingV1({
     iam_apikey: watson.apikey,
     version: '2018-04-05',
     url: watson.url
@@ -33,11 +35,16 @@ async function fetchWatsonAndReturnKeywords(sentence){
 
 
 
-async function Text(content){
+async function Text(){
+
+    const content = state.load()
+
     sanitizeContent(content)
     breakContentIntoSentences(content)
     limitMaximumSentences(content)
     await fetchKeywordsOfAllSentences(content)
+
+    state.save(content)
 
     function sanitizeContent(content){
         const withoutBlankAndMarkdownLines = removeBlankAndMarkdownLines(content.sourceContentOriginal)
