@@ -49,7 +49,6 @@ async function Image(){
             }
             sentenceIndex++
         }
-        console.log(downloadedImages)
 
         async function downloadImage(image){
             try{
