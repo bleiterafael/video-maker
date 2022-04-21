@@ -16,7 +16,7 @@ async function start(){
     await robots.image()
 
     const content = robots.state.load()
-    //console.log(content)
+    console.log(content)
 }
 
 start()
