@@ -23,8 +23,10 @@ async function fetchWatsonAndReturnKeywords(sentence){
                 }
             },
             (error,response) => {
-                if(error)
-                    throw error
+                if(error){
+                    reject(error)
+                    return
+                }
 
                 const keywords = response.keywords.map(keyword => keyword.text)
                 resolve(keywords)
