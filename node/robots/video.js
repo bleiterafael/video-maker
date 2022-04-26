@@ -1,5 +1,8 @@
 const gm = require('gm').subClass({imageMagick: true})
+const spawn = require('child_process').spawn
 const state = require('./state.js')
+const path = require('path')
+const rootPath = path.resolve(__dirname,'..')
 
 async function Image(){
 
@@ -7,6 +10,8 @@ async function Image(){
     await convertAllImages(content)
     await createAllSentencesImages(content)
     await createYouTubeThumbnail()
+    await createAfterEffectsScript(content)
+    await renderVideoWithAfterEffects()
     state.save(content)
 
     async function convertAllImages(content)
@@ -105,7 +110,31 @@ async function Image(){
                 })
         })
     }
+
+    async function createAfterEffectsScript(content){
+        await state.saveScript(content)
+    }
     
+    async function renderVideoWithAfterEffects(){
+        return new Promise((resolve,reject) => {
+            const aerenderFilePath = `C:/Program Files/Adobe/Adobe After Effects 2022/Support Files/aerender.exe`
+            const templateFilePath = `${rootPath}/templates/1/template.aep`
+            const destinationFilePath = `${rootPath}/content/output.mov`
+            
+            console.log(`> Starting After Effects`)
+            const aerender = spawn(aerenderFilePath,[
+                '-comp', 'main',
+                '-project', templateFilePath,
+                '-output', destinationFilePath
+            ])
+            aerender.stdout.on('data', data => process.stdout.write(data))
+            aerender.stdout.on('close', () => {
+                console.log(`> After Effects closed`)
+                resolve()
+            })
+
+        })
+    }
 }
 
 module.exports = Image
