@@ -110,3 +110,5 @@ dist
 
 node/content/*.png
 node/content/*.jpg
+node/content/*.js
+node/content/*.mov

@@ -5,7 +5,8 @@ const robots = {
     wikipedia: require('./robots/wikipedia.js'),
     state: require('./robots/state.js'),
     image: require('./robots/image.js'),
-    video: require('./robots/video.js')
+    video: require('./robots/video.js'),
+    youtube: require('./robots/youtube.js')
 }
 
 async function start(){
@@ -16,9 +17,8 @@ async function start(){
     await robots.text()
     await robots.image()
     await robots.video()
+    await robots.youtube()
 
-    //const content = robots.state.load()
-    //console.log(content)
 }
 
 start()
