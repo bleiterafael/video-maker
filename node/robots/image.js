@@ -12,11 +12,15 @@ async function Image(){
     state.save(content)
 
     async function fetchImagesOfAllSentences(content){
+        let sentenceIndex = 0
         for(const sentence of content.sentences)
         {
-            const query = `${content.searchTerm} ${sentence.keywords[0]}`
+            let query = content.searchTerm
+            if(sentenceIndex > 0)
+                query += ` ${sentence.keywords[0]}`
             sentence.images = await fetchGoogleAndReturnImagesLinks(query)
             sentence.googleSearchQuery = query
+            sentenceIndex++
         }
     }
 
